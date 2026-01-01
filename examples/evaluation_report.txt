@@ -1,0 +1,39 @@
+======================================================================
+SEIZURE DETECTION MODEL - EVALUATION REPORT
+======================================================================
+
+PERFORMANCE METRICS
+----------------------------------------------------------------------
+  Accuracy:        0.9284
+  F1 Score:        0.7988
+  ROC-AUC:         0.9806
+  PR-AUC:          0.8967
+
+CLINICAL METRICS
+----------------------------------------------------------------------
+  Sensitivity:     0.9588  (True Positive Rate)
+  Specificity:     0.9230  (True Negative Rate)
+  Precision (PPV): 0.6846  (Positive Predictive Value)
+  NPV:             0.9923  (Negative Predictive Value)
+
+CONFUSION MATRIX
+----------------------------------------------------------------------
+  True Negatives:   12738
+  False Positives:   1062
+  False Negatives:     99
+  True Positives:    2305
+
+CLINICAL INTERPRETATION
+----------------------------------------------------------------------
+  Total windows analyzed: 16204
+  Correctly classified:   15043 (92.8%)
+  
+  Of 2404 actual seizure windows:
+    - Correctly detected:  2305 (95.9%)
+    - Missed:              99 (4.1%)
+  
+  Of 13800 actual background windows:
+    - Correctly rejected:  12738 (92.3%)
+    - False alarms:        1062 (7.7%)
+
+======================================================================
