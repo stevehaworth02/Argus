@@ -9,7 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![ROC-AUC](https://img.shields.io/badge/ROC--AUC-0.9806-brightgreen.svg)](https://github.com/stevehaworth02/Argus)
 
-With much more to come, Argus, inspired by the all-seeing giant of Greek mythology, provides continuous monitoring, detection, and artifact classification for detection of abnormal patterns in EEG recordings. This system achieves **98.06% ROC-AUC** on the Temple University Hospital EEG Seizure Corpus using a CNN-LSTM architecture, designed for real-time deployment on portable EEG devices.
+With much more to come, Argus, inspired by the all-seeing giant of Greek mythology, provides continuous monitoring, detection, and artifact classification for detection of abnormal patterns in EEG recordings. This system achieves **98.06% ROC-AUC** on the Temple University Hospital EEG Seizure Corpus using a CNN-LSTM architecture, designed for ambulatory deployment on portable EEG devices.
 
 ---
 
