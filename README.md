@@ -1,4 +1,8 @@
-# Argus
+<p align="center">
+  <img src="argus.png" alt="Argus logo" width="180"/>
+  
+</p>
+
 ### Seizure Detection for Continuous EEG Monitoring
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
