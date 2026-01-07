@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="argus.png" alt="Argus logo" width="80%"/>
+  <img src="argus.png" alt="Argus logo" width="100%"/>
 </p>
 
 ### Seizure Detection for Continuous EEG Monitoring
