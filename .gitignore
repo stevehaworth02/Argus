@@ -37,7 +37,9 @@ wheels/
 data/
 *.edf
 *.csv
-
+*.mat
+preprocessed/
+raw_data/
 # Preprocessed data (TOO LARGE)
 preprocessed/
 *.npz
@@ -48,20 +50,31 @@ checkpoints/
 *.pth
 *.pt
 *.ckpt
-
+*.pth
+*.pt
+checkpoints/
+models/
+best_model*
 # Outputs (TOO LARGE)
 evaluation/
 visualizations/
 runs/
 logs/
-
+# Results with potential PHI
+results/
+outputs/
+logs/
+*.log
 # TensorBoard
 events.out.tfevents.*
 
 # OS
 .DS_Store
 Thumbs.db
-
+# System
+.DS_Store
+Thumbs.db
+desktop.ini
 # Temporary files
 tmp/
 temp/
