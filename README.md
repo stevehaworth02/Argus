@@ -1,19 +1,15 @@
-<p align="center">
-  <img src="argus.png" alt="Argus logo" width="100%"/>
-</p>
-
-### Seizure Detection for Continuous EEG Monitoring
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)](https://pytorch.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+### Seizure Detection for Continuous EEG Monitoring
 
 ---
 
 <p align="center">
   <img src="slides/Slide1.png"  width="900">
-  <img src="slides/Slide3.png"  width="900">  <!-- swapped -->
-  <img src="slides/Slide2.png"  width="900">  <!-- swapped -->
+  <img src="slides/Slide3.png"  width="900">
+  <img src="slides/Slide2.png"  width="900">
   <img src="slides/Slide4.png"  width="900">
   <img src="slides/Slide5.png"  width="900">
   <img src="slides/Slide6.png"  width="900">
