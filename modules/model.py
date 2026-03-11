@@ -1,33 +1,22 @@
 """
-EEG Seizure Detection - Robust CNN-LSTM Model
-Ceribell Project
-
 Architecture:
     1. Multi-scale temporal convolution blocks
     2. Spatial convolution across channels
     3. Bidirectional LSTM for temporal dependencies
     4. Attention mechanism for focus on seizure patterns
     5. Fully connected classifier with dropout
-
 Design Principles:
     - Robust: Heavy regularization, batch norm, dropout
     - Efficient: Optimized for portable hardware
     - Performant: Deep enough for complex patterns
     - Production-ready: Proper initialization, error handling
-
-Author: Ceribell Seizure Detector Project
 """
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from typing import Tuple, Optional
 import numpy as np
 
-
-# ============================================================================
-# ATTENTION MECHANISM
-# ============================================================================
 
 class TemporalAttention(nn.Module):
     """
@@ -44,28 +33,14 @@ class TemporalAttention(nn.Module):
         )
     
     def forward(self, lstm_output: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-        """
-        Args:
-            lstm_output: (batch, seq_len, hidden_dim)
-        
-        Returns:
-            context: Attention-weighted context vector (batch, hidden_dim)
-            attention_weights: Attention weights (batch, seq_len)
-        """
         # Calculate attention scores
         attention_scores = self.attention(lstm_output)  # (batch, seq_len, 1)
         attention_weights = F.softmax(attention_scores.squeeze(-1), dim=1)  # (batch, seq_len)
-        
         # Apply attention weights
         context = torch.bmm(attention_weights.unsqueeze(1), lstm_output)  # (batch, 1, hidden_dim)
         context = context.squeeze(1)  # (batch, hidden_dim)
         
         return context, attention_weights
-
-
-# ============================================================================
-# TEMPORAL CONVOLUTION BLOCK
-# ============================================================================
 
 class TemporalConvBlock(nn.Module):
     """
@@ -84,7 +59,6 @@ class TemporalConvBlock(nn.Module):
                                padding=kernel_size//2)
         self.bn2 = nn.BatchNorm1d(out_channels)
         self.dropout = nn.Dropout(dropout)
-        
         # Residual connection
         self.residual = nn.Conv1d(in_channels, out_channels, 1) if in_channels != out_channels else nn.Identity()
         
@@ -118,16 +92,6 @@ class TemporalConvBlock(nn.Module):
 
 class SeizureDetectorCNNLSTM(nn.Module):
     """
-    Robust CNN-LSTM architecture for seizure detection.
-    
-    Architecture Overview:
-        1. Multi-scale temporal CNN (extract features at different scales)
-        2. Spatial CNN across channels (learn channel interactions)
-        3. Max pooling for dimensionality reduction
-        4. Bidirectional LSTM (capture temporal dependencies)
-        5. Temporal attention (focus on important segments)
-        6. Fully connected classifier
-    
     Input: (batch, 22 channels, 2000 samples) - 10 seconds at 200 Hz
     Output: (batch, 2) - [background, seizure] logits
     """
@@ -141,19 +105,7 @@ class SeizureDetectorCNNLSTM(nn.Module):
                  lstm_layers: int = 2,
                  dropout: float = 0.4,
                  attention: bool = True):
-        """
-        Initialize the seizure detection model.
-        
-        Args:
-            num_channels: Number of EEG channels (default: 22)
-            num_samples: Number of time samples per window (default: 2000)
-            num_classes: Number of output classes (default: 2 - background/seizure)
-            cnn_filters: List of filter sizes for CNN layers
-            lstm_hidden: Hidden dimension for LSTM
-            lstm_layers: Number of LSTM layers
-            dropout: Dropout probability
-            attention: Whether to use attention mechanism
-        """
+       
         super(SeizureDetectorCNNLSTM, self).__init__()
         
         self.num_channels = num_channels
@@ -178,10 +130,7 @@ class SeizureDetectorCNNLSTM(nn.Module):
         # Calculate size after convolutions and pooling
         self.feature_size = cnn_filters[2]
         self.seq_len = num_samples // (4 ** 3)  # 3 pooling layers
-        
-        # ====================================================================
-        # 2. BIDIRECTIONAL LSTM
-        # ====================================================================
+
         # Capture temporal dependencies in both directions
         
         self.lstm = nn.LSTM(
@@ -195,9 +144,6 @@ class SeizureDetectorCNNLSTM(nn.Module):
         
         lstm_output_dim = lstm_hidden * 2  # Bidirectional doubles the output
         
-        # ====================================================================
-        # 3. ATTENTION MECHANISM (OPTIONAL)
-        # ====================================================================
         
         if self.use_attention:
             self.attention = TemporalAttention(lstm_output_dim)
@@ -205,9 +151,6 @@ class SeizureDetectorCNNLSTM(nn.Module):
         else:
             classifier_input_dim = lstm_output_dim
         
-        # ====================================================================
-        # 4. FULLY CONNECTED CLASSIFIER
-        # ====================================================================
         
         self.classifier = nn.Sequential(
             nn.Linear(classifier_input_dim, 256),
@@ -261,9 +204,7 @@ class SeizureDetectorCNNLSTM(nn.Module):
         """
         batch_size = x.size(0)
         
-        # ====================================================================
-        # 1. TEMPORAL CONVOLUTION (Multi-scale feature extraction)
-        # ====================================================================
+
         
         out = self.temporal_conv1(x)  # (batch, 32, 2000)
         out = self.pool(out)          # (batch, 32, 500)
@@ -273,23 +214,15 @@ class SeizureDetectorCNNLSTM(nn.Module):
         
         out = self.temporal_conv3(out)  # (batch, 128, 125)
         out = self.pool(out)            # (batch, 128, 31)
-        
-        # ====================================================================
-        # 2. PREPARE FOR LSTM (Reshape)
-        # ====================================================================
+
         
         # Transpose for LSTM: (batch, seq_len, features)
         out = out.permute(0, 2, 1)  # (batch, 31, 128)
-        
-        # ====================================================================
-        # 3. LSTM (Temporal modeling)
-        # ====================================================================
+
         
         lstm_out, (hidden, cell) = self.lstm(out)  # (batch, seq_len, lstm_hidden*2)
         
-        # ====================================================================
-        # 4. ATTENTION or POOLING
-        # ====================================================================
+
         
         if self.use_attention:
             # Use attention to get weighted context
@@ -299,9 +232,7 @@ class SeizureDetectorCNNLSTM(nn.Module):
             context = torch.mean(lstm_out, dim=1)
             attention_weights = None
         
-        # ====================================================================
-        # 5. CLASSIFICATION
-        # ====================================================================
+
         
         logits = self.classifier(context)  # (batch, num_classes)
         
@@ -334,21 +265,7 @@ class SeizureDetectorCNNLSTM(nn.Module):
         return (param_size + buffer_size) / (1024 ** 2)
 
 
-# ============================================================================
-# MODEL FACTORY FUNCTIONS
-# ============================================================================
-
 def create_seizure_detector(model_size: str = 'medium', **kwargs) -> SeizureDetectorCNNLSTM:
-    """
-    Factory function to create pre-configured seizure detection models.
-    
-    Args:
-        model_size: 'small', 'medium', or 'large'
-        **kwargs: Additional arguments to override defaults
-    
-    Returns:
-        Configured SeizureDetectorCNNLSTM model
-    """
     configs = {
         'small': {
             'cnn_filters': [16, 32, 64],
@@ -392,48 +309,40 @@ def create_seizure_detector(model_size: str = 'medium', **kwargs) -> SeizureDete
     return model
 
 
-# ============================================================================
-# MODEL TESTING
-# ============================================================================
+
 
 if __name__ == "__main__":
     print("\n" + "="*70)
     print("TESTING SEIZURE DETECTOR MODEL")
     print("="*70 + "\n")
     
-    # Test with dummy data
+    # quick proof of concept
     batch_size = 8
     num_channels = 22
     num_samples = 2000
-    
-    # Create dummy input
     x = torch.randn(batch_size, num_channels, num_samples)
     
     print(f"Input shape: {x.shape}")
-    
-    # Test different model sizes
+    # Test different model size over CONCEPT DATA.
     for size in ['small', 'medium', 'large']:
         print(f"\n{'='*70}")
         print(f"Testing {size.upper()} model")
         print(f"{'='*70}")
         
         model = create_seizure_detector(size)
-        
-        # Forward pass
+
         logits, attention_weights = model(x)
         
         print(f"\nOutput:")
         print(f"  - Logits shape: {logits.shape}")
         if attention_weights is not None:
             print(f"  - Attention weights shape: {attention_weights.shape}")
-        
-        # Test prediction
         probs = model.predict(x)
         print(f"  - Probabilities shape: {probs.shape}")
         print(f"  - Probability sum (should be ~1.0): {probs[0].sum().item():.4f}")
-        
         print(f"\n✓ {size.upper()} model working correctly!\n")
     
     print("="*70)
     print("All model sizes tested successfully!")
+
     print("="*70 + "\n")
