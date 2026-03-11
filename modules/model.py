@@ -323,7 +323,7 @@ if __name__ == "__main__":
     x = torch.randn(batch_size, num_channels, num_samples)
     
     print(f"Input shape: {x.shape}")
-    # Test different model size over CONCEPT DATA.
+    # Test different model size over CONCEPT DATA. (This is not used during inference)
     for size in ['small', 'medium', 'large']:
         print(f"\n{'='*70}")
         print(f"Testing {size.upper()} model")
@@ -346,3 +346,4 @@ if __name__ == "__main__":
     print("All model sizes tested successfully!")
 
     print("="*70 + "\n")
+
