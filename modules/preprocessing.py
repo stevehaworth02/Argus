@@ -1,18 +1,3 @@
-"""
-EEG Seizure Detection - Data Preprocessing Pipeline
-Ceribell Project
-
-This module handles:
-- EDF file loading with MNE
-- Multi-channel EEG preprocessing
-- Sliding window generation with labels
-- Class imbalance handling
-- PyTorch Dataset integration
-
-Author: Ceribell Seizure Detector Project
-Dataset: Temple University Hospital EEG Seizure Corpus (TUSZ) v2.0.3
-"""
-
 import os
 import numpy as np
 import pandas as pd
@@ -21,11 +6,6 @@ from scipy import signal
 from typing import List, Tuple, Dict, Optional
 import warnings
 warnings.filterwarnings('ignore', category=RuntimeWarning)
-
-# ============================================================================
-# CONFIGURATION
-# ============================================================================
-
 class Config:
     """Central configuration for preprocessing pipeline"""
     
@@ -108,22 +88,17 @@ def load_edf_file(edf_path: str, target_channels: List[str] = None) -> Tuple[np.
 def parse_annotations(csv_path: str) -> pd.DataFrame:
     """
     Parse seizure annotations from CSV file.
-    
     Args:
         csv_path: Path to .csv annotation file
-    
     Returns:
         DataFrame with columns: channel, start_time, stop_time, label, confidence
     """
     try:
         if not os.path.exists(csv_path):
-            # No annotations = all background
             return pd.DataFrame(columns=['channel', 'start_time', 'stop_time', 'label', 'confidence'])
-        
         # Read CSV, skipping comment lines (lines starting with #)
-        # Also handle potential header variations
+        # headers can vary
         df = pd.read_csv(csv_path, comment='#', skip_blank_lines=True)
-        
         # Check if we got valid data
         if df.empty or len(df.columns) < 5:
             return pd.DataFrame(columns=['channel', 'start_time', 'stop_time', 'label', 'confidence'])
@@ -261,11 +236,6 @@ def resample_data(data: np.ndarray, original_sfreq: float,
     
     return resampled_data
 
-
-# ============================================================================
-# WINDOW GENERATION WITH LABELS
-# ============================================================================
-
 def create_windows_with_labels(data: np.ndarray, annotations: pd.DataFrame,
                                 sfreq: float, window_size: float, 
                                 overlap: float) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -324,10 +294,6 @@ def create_windows_with_labels(data: np.ndarray, annotations: pd.DataFrame,
     
     return windows, labels, times
 
-# ============================================================================
-# COMPLETE PREPROCESSING PIPELINE
-# ============================================================================
-
 def preprocess_eeg_file(edf_path: str, csv_path: str, 
                         config: Config = Config()) -> Dict:
     """
@@ -366,13 +332,13 @@ def preprocess_eeg_file(edf_path: str, csv_path: str,
         data = data[:target_channel_count, :]
         channels = channels[:target_channel_count]
     
-    # Load annotations
+
     annotations = parse_annotations(csv_path)
     
     # Apply bandpass filter
     data = apply_bandpass_filter(data, sfreq, config.LOWCUT, config.HIGHCUT)
     
-    # Apply notch filter (remove power line noise)
+    # Apply notch filter 
     data = apply_notch_filter(data, sfreq, config.NOTCH_FREQ)
     
     # Resample to target frequency
@@ -604,4 +570,5 @@ if __name__ == "__main__":
     print("\n  # Load preprocessed data")
     print("  data = np.load('./preprocessed/dev.npz')")
     print("  windows = data['windows']")
+
     print("  labels = data['labels']")
