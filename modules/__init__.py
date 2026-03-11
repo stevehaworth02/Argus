@@ -1,7 +1,4 @@
 """
-EEG Seizure Detection - Modules Package
-Ceribell Project
-
 This package contains all preprocessing and data loading utilities.
 """
 
@@ -36,4 +33,5 @@ __all__ = [
 ]
 
 __version__ = '1.0.0'
-__author__ = 'Ceribell Seizure Detector Project'
+
+__author__ = 'Seizure Detector Project'
