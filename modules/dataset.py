@@ -1,14 +1,10 @@
 """
-EEG Seizure Detection - PyTorch Dataset
-Ceribell Project
-
+Dummy data is used for pipeline testing to speed up efficiency, not used being inference
 This module provides:
 - PyTorch Dataset for EEG windows
 - Data augmentation for EEG signals
 - Class imbalance handling (weighted sampling, oversampling)
 - Train/validation splitting
-
-Author: Ceribell Seizure Detector Project
 """
 
 import numpy as np
@@ -17,10 +13,6 @@ from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from typing import Tuple, Optional, Dict
 from sklearn.model_selection import train_test_split
 
-
-# ============================================================================
-# DATA AUGMENTATION
-# ============================================================================
 
 class EEGAugmentation:
     """Data augmentation techniques for EEG signals"""
@@ -97,16 +89,6 @@ class EEGAugmentation:
     
     @staticmethod
     def apply_augmentation(data: np.ndarray, prob: float = 0.5) -> np.ndarray:
-        """
-        Apply random combination of augmentations.
-        
-        Args:
-            data: EEG window (channels, samples)
-            prob: Probability of applying each augmentation
-        
-        Returns:
-            Augmented EEG data
-        """
         augmented = data.copy()
         
         if np.random.random() < prob:
@@ -124,9 +106,6 @@ class EEGAugmentation:
         return augmented
 
 
-# ============================================================================
-# PYTORCH DATASET
-# ============================================================================
 
 class EEGSeizureDataset(Dataset):
     """
@@ -219,10 +198,6 @@ class EEGSeizureDataset(Dataset):
         sample_weights = np.array([class_weights[label] for label in self.labels])
         return torch.from_numpy(sample_weights)
 
-
-# ============================================================================
-# DATA LOADING UTILITIES
-# ============================================================================
 
 def load_preprocessed_data(npz_path: str) -> Tuple[np.ndarray, np.ndarray, list]:
     """
@@ -414,4 +389,5 @@ if __name__ == "__main__":
     
     print("\n" + "="*60)
     print("Dataset ready for model training!")
+
     print("="*60 + "\n")
